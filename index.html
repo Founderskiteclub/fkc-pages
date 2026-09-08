@@ -245,7 +245,7 @@ footer{
 
   <div class="cta">
     <h3>Two minutes to fill in your own</h3>
-    <p>Right now this page only shows what's public: your title, your company, your LinkedIn — which is the least interesting thing about any of you. <strong>Everyone here is far more than whatever they happen to be good at, and finding that out is the whole point of these three days.</strong> That part doesn't happen on a page. But the first day usually disappears into small talk, and if we all land already knowing roughly who's who, we skip the ice-breaking and get to the good stuff sooner.</p>
+    <p>Right now this page only shows what's public: title, company, LinkedIn. <strong>You're all far more than what you're good at — that part you'll find out on the water.</strong> But the first day always goes on small talk. Land knowing who's who and we skip it.</p>
     <div class="cta-row">
       <a class="btn pending" id="formBtn" href="#" aria-disabled="true">Form link coming</a>
       <span class="deadline">Last update: Monday 14 September</span>
@@ -324,6 +324,15 @@ const CREW = [
   {g:"team",n:"Liraz Lasry",r:"Co-Owner · Facilitator",c:"XPAND Executive Retreats",li:"https://il.linkedin.com/in/lirazlasry"}
 ];
 
+/* PROFILES: filled in by the people themselves. Regenerated from the form responses. */
+/* PROFILES_START */
+const PROFILES = {
+  "Enrico Zanvettor": {t:"Operator / executive", sp:["Teams","Events","DJing","Offsites","Retreats","Production"], want:"Business inspiration, life", bio:"Have a great wind"}
+};
+/* PROFILES_END */
+
+CREW.forEach(p => { const x = PROFILES[p.n]; if (x) Object.assign(p, x); });
+
 const LABELS = {members:"Members", speakers:"Speakers & guests", team:"Team on the ground"};
 const ORDER = ["members","speakers","team"];
 const HUES = ["#3DBCAB","#9DEFC7","#F2A516","#7FD8C9","#C9E8A0","#F0C36B"];
@@ -339,7 +348,7 @@ function card(p, i){
 
   const roleLine = p.r
     ? `<p class="role">${esc(p.r)}${p.c?` · <b>${esc(p.c)}</b>`:""}</p>`
-    : `<p class="role unknown">Profile to come</p>`;
+    : (p.t ? `<p class="role">${esc(p.t)}</p>` : `<p class="role unknown">Profile to come</p>`);
 
   const bio = p.bio ? `<p class="bio">${esc(p.bio)}</p>` : "";
 
@@ -349,6 +358,7 @@ function card(p, i){
 
   const want = p.want
     ? `<div class="slot"><span class="slot-label">Looking for in Tarifa</span><p class="bio">${esc(p.want)}</p></div>`
+
     : `<div class="slot"><span class="slot-label">Looking for in Tarifa</span><div class="slot-empty">Not filled in yet</div></div>`;
 
   const li = p.li
