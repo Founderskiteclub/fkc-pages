@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Founders Kite Club - Tarifa 2026 crew">
+<title>Tarifa Crew 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,300..600&display=swap');
+
+:root{
+  --ground:#F6FAF9;
+  --surface:#FFFFFF;
+  --surface-2:#ECF4F2;
+  --line:#DBE8E6;
+  --line-strong:#C3D8D5;
+  --ink:#08201F;
+  --ink-2:#4E6866;
+  --ink-3:#7C9491;
+  --accent:#0C8B7C;
+  --accent-fill:#3DBCAB;
+  --accent-soft:#DFF3EF;
+  --amber:#A96707;
+  --amber-soft:#FBEFD8;
+  --shadow:0 1px 2px rgba(8,32,31,.05), 0 8px 24px -16px rgba(8,32,31,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#041413; --surface:#0A2321; --surface-2:#0E2E2B;
+    --line:#1A3C39; --line-strong:#27524E;
+    --ink:#E9F5F3; --ink-2:#93AEAB; --ink-3:#6E8886;
+    --accent:#4FCFBD; --accent-fill:#3DBCAB; --accent-soft:#0F3B36;
+    --amber:#F2A516; --amber-soft:#3A2B0C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#041413; --surface:#0A2321; --surface-2:#0E2E2B;
+  --line:#1A3C39; --line-strong:#27524E;
+  --ink:#E9F5F3; --ink-2:#93AEAB; --ink-3:#6E8886;
+  --accent:#4FCFBD; --accent-fill:#3DBCAB; --accent-soft:#0F3B36;
+  --amber:#F2A516; --amber-soft:#3A2B0C;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Newsreader",Georgia,serif;font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.shell{max-width:1120px;margin:0 auto;padding:28px 20px 72px}
+
+.masthead{display:flex;flex-direction:column;gap:16px;padding-bottom:20px}
+.wordmark{
+  font-family:"Archivo",system-ui,sans-serif;font-weight:700;font-size:11px;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:10px;
+}
+.wordmark::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-strong),transparent)}
+h1{
+  font-family:"Archivo",system-ui,sans-serif;font-weight:700;
+  font-size:clamp(34px,7vw,58px);line-height:.98;letter-spacing:-.025em;
+  margin:0;text-wrap:balance;
+}
+h1 em{font-style:normal;color:var(--accent)}
+.dateline{
+  font-family:"Archivo",system-ui,sans-serif;font-size:13px;font-weight:500;
+  color:var(--ink-2);display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;
+}
+.dateline .dot{width:4px;height:4px;border-radius:50%;background:var(--accent-fill)}
+.lede{font-size:17px;color:var(--ink-2);max-width:60ch;margin:0}
+.lede strong{color:var(--ink);font-weight:500}
+
+/* ---------- call to action ---------- */
+.cta{
+  background:var(--surface-2);border:1px solid var(--line);border-radius:14px;
+  padding:22px;margin:0 0 24px;display:flex;flex-direction:column;gap:14px;
+}
+.cta h3{
+  font-family:"Archivo",system-ui,sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;margin:0;color:var(--ink);
+}
+.cta p{margin:0;font-size:15.5px;color:var(--ink-2);max-width:64ch}
+.cta p strong{color:var(--ink);font-weight:500}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{
+  font-family:"Archivo",system-ui,sans-serif;font-size:14px;font-weight:600;
+  padding:11px 20px;border-radius:9px;text-decoration:none;
+  background:var(--ink);color:var(--ground);display:inline-block;
+}
+.btn:hover{background:var(--accent);color:#04201C}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.pending{background:var(--line-strong);color:var(--ink-2);cursor:default}
+.deadline{
+  font-family:"Archivo",system-ui,sans-serif;font-size:12.5px;font-weight:600;
+  color:var(--amber);background:var(--amber-soft);padding:8px 13px;border-radius:8px;
+}
+.progress{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.progress .bar{height:5px;border-radius:3px;background:var(--line-strong);overflow:hidden}
+.progress .bar span{display:block;height:100%;background:var(--accent-fill);width:0%}
+.progress .txt{
+  font-family:"Archivo",system-ui,sans-serif;font-size:11.5px;color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---------- toolbar ---------- */
+.toolbar{
+  position:sticky;top:0;z-index:5;
+  background:color-mix(in srgb, var(--ground) 88%, transparent);
+  backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:12px 0;margin-bottom:24px;
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+}
+.search{flex:1 1 220px;min-width:180px;position:relative}
+.search input{
+  width:100%;font-family:"Archivo",system-ui,sans-serif;font-size:14px;
+  padding:9px 12px 9px 34px;border-radius:8px;
+  border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);
+}
+.search input::placeholder{color:var(--ink-3)}
+.search input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink-3)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  font-family:"Archivo",system-ui,sans-serif;font-size:12px;font-weight:600;
+  padding:8px 13px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-2);
+}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.count{
+  font-family:"Archivo",system-ui,sans-serif;font-size:12px;color:var(--ink-3);
+  font-variant-numeric:tabular-nums;margin-left:auto;
+}
+
+/* ---------- groups & cards ---------- */
+.group{margin:0 0 32px}
+.group-head{display:flex;align-items:baseline;gap:10px;margin:0 0 14px;font-family:"Archivo",system-ui,sans-serif}
+.group-head h2{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin:0}
+.group-head .n{font-size:11px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.group-head .rule{flex:1;height:1px;background:var(--line)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(276px,1fr));gap:13px}
+
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:17px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow);
+}
+.card-top{display:flex;gap:13px;align-items:flex-start}
+.avatar{
+  width:50px;height:50px;border-radius:50%;flex:none;display:grid;place-items:center;
+  font-family:"Archivo",system-ui,sans-serif;font-weight:700;font-size:15px;
+  color:#04201C;background:var(--accent-fill);overflow:hidden;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.avatar.none{background:transparent;border:1.5px dashed var(--line-strong);color:var(--ink-3)}
+.who{min-width:0;flex:1}
+.name{
+  font-family:"Archivo",system-ui,sans-serif;font-weight:600;font-size:16.5px;
+  letter-spacing:-.01em;line-height:1.2;margin:0 0 3px;
+}
+.role{font-family:"Archivo",system-ui,sans-serif;font-size:12.5px;line-height:1.35;color:var(--ink-2);margin:0}
+.role b{font-weight:600;color:var(--ink)}
+.role.unknown{color:var(--ink-3);font-style:italic}
+
+.slot{display:flex;flex-direction:column;gap:5px}
+.slot-label{
+  font-family:"Archivo",system-ui,sans-serif;font-size:9.5px;font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);
+}
+.slot-empty{
+  font-family:"Archivo",system-ui,sans-serif;font-size:12px;color:var(--ink-3);
+  border:1px dashed var(--line-strong);border-radius:7px;padding:7px 10px;
+}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{
+  font-family:"Archivo",system-ui,sans-serif;font-size:11px;font-weight:500;
+  padding:3px 8px;border-radius:6px;
+  background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line);
+}
+.tag.want{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.bio{margin:0;font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+
+.card-foot{
+  margin-top:auto;padding-top:10px;border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:10px;font-family:"Archivo",system-ui,sans-serif;font-size:11.5px;
+}
+.li{color:var(--accent);text-decoration:none;font-weight:600}
+.li:hover{text-decoration:underline}
+.li:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.li.none{color:var(--ink-3);font-weight:400}
+.state{
+  margin-left:auto;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 7px;border-radius:5px;background:var(--amber-soft);color:var(--amber);
+}
+.state.done{background:var(--accent-soft);color:var(--accent)}
+.card-btn{
+  display:block;text-align:center;text-decoration:none;
+  font-family:"Archivo",system-ui,sans-serif;font-size:12.5px;font-weight:600;
+  padding:9px 12px;border-radius:8px;margin-top:2px;
+  border:1px solid var(--line-strong);color:var(--ink-3);background:transparent;
+}
+.card-btn.live{color:var(--accent);border-color:var(--accent)}
+.card-btn.live:hover{background:var(--accent);color:#04201C;border-color:var(--accent)}
+.card-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.empty-state{display:none;padding:40px 0;text-align:center;color:var(--ink-3);font-size:16px}
+footer{
+  margin-top:32px;padding-top:20px;border-top:1px solid var(--line);
+  font-family:"Archivo",system-ui,sans-serif;font-size:12px;color:var(--ink-3);
+  display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;
+}
+@media (max-width:520px){
+  .shell{padding:22px 15px 56px}
+  .count{width:100%;margin-left:0;order:9}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="shell">
+
+  <header class="masthead">
+    <div class="wordmark">Founders Kite Club</div>
+    <h1>Who's on the<br><em>beach</em> in Tarifa</h1>
+    <div class="dateline">
+      <span>17–19 September 2026</span><span class="dot"></span>
+      <span>Hotel 100% Fun</span><span class="dot"></span>
+      <span>Longevity Code</span><span class="dot"></span>
+      <span id="total">32 people</span>
+    </div>
+    <p class="lede">Everyone you'll be sharing a beach, a dinner table and a downwinder with. <strong>Find your people before you land.</strong></p>
+  </header>
+
+  <div class="cta">
+    <h3>Two minutes to fill in your own</h3>
+    <p>Right now this page only shows what's public: your title, your company, your LinkedIn. <strong>The two things that actually help us seat you next to the right person — your superpowers and what you want out of these days — only you can write.</strong> The more of you fill it in, the more use this page is to everyone.</p>
+    <div class="cta-row">
+      <a class="btn pending" id="formBtn" href="#" aria-disabled="true">Form link coming</a>
+      <span class="deadline">Last update: Monday 14 September</span>
+    </div>
+    <p style="font-size:14.5px">After the 14th we freeze the page and print it as it stands. Whatever is still blank, stays blank.</p>
+    <div class="progress">
+      <div class="bar"><span id="bar"></span></div>
+      <div class="txt" id="progressTxt"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      <input id="q" type="search" placeholder="Search a name or a company…" aria-label="Search the crew">
+    </div>
+    <div class="chips" role="group" aria-label="Filter by group">
+      <button class="chip" data-f="all" aria-pressed="true">Everyone</button>
+      <button class="chip" data-f="members" aria-pressed="false">Members</button>
+      <button class="chip" data-f="speakers" aria-pressed="false">Speakers &amp; guests</button>
+      <button class="chip" data-f="team" aria-pressed="false">Team</button>
+    </div>
+    <div class="count" id="count"></div>
+  </div>
+
+  <main id="out"></main>
+  <div class="empty-state" id="none">Nobody matches that. Try a shorter search.</div>
+
+  <footer>
+    <span>Updated 8 September 2026</span>
+    <span>Founders Kite Club · Tarifa 2026</span>
+  </footer>
+</div>
+
+<script>
+/* Paste the Google Form URL here and the button goes live. */
+const FORM_URL = "";
+
+/* role/company are from public sources. bio, sp and want come only from the person. */
+const CREW = [
+  {g:"members",n:"Achim Köllner",r:"Founder",c:"Die Agenturverwaltung",li:"https://de.linkedin.com/in/achimkoellner"},
+  {g:"members",n:"Atilana Piñón",r:"Co-Founder & Co-CEO",c:"Retorna",li:"https://uk.linkedin.com/in/atilanapinon"},
+  {g:"members",n:"Benedek Szilágyi",r:"Product Lead",c:"1337 Partners",li:"https://hu.linkedin.com/in/benedekszlgy"},
+  {g:"members",n:"Bernhard Niesner",r:"Co-Founder & CEO",c:"busuu",li:"https://uk.linkedin.com/in/bernhardniesner"},
+  {g:"members",n:"Christo Peev",r:"Founder & CEO",c:"Motion Software",li:"https://bg.linkedin.com/in/christo-peev"},
+  {g:"members",n:"Felix Hentzen",r:"Head of VC & Startup BD, EMEA North",c:"Google Cloud",li:"https://www.linkedin.com/in/felixhentzen/"},
+  {g:"members",n:"Gabor Tozser",r:"Founder & CEO",c:"Quickborn Consulting",li:"https://www.linkedin.com/in/gabortozser/"},
+  {g:"members",n:"Jesper Kleinpetersen",r:"",c:"",li:""},
+  {g:"members",n:"Julia Tennert",r:"Co-Founder & CEO",c:"Amaringa Games",li:"https://www.linkedin.com/in/julia-tennert/"},
+  {g:"members",n:"Karsten Tiemann",r:"",c:"",li:"https://www.linkedin.com/in/karsten-tiemann-2104bb24a/"},
+  {g:"members",n:"Marc Drüner",r:"Founder & CEO",c:"eduBITES",li:"https://www.linkedin.com/in/marcdruener/"},
+  {g:"members",n:"Moritz Braunwarth",r:"Co-Founder & MD",c:"vly",li:"https://www.linkedin.com/in/moritz-braunwarth-6691a2164/"},
+  {g:"members",n:"Paulina Jacob",r:"Senior Associate",c:"Bird & Bird",li:"https://www.linkedin.com/in/paulina-jacob-a1b183108/"},
+  {g:"members",n:"Peter Popov",r:"CEO",c:"Konsulko Group",li:"https://www.linkedin.com/in/petepopov/"},
+  {g:"members",n:"Petter Made",r:"Partner · Co-Founder of SumUp",c:"EWOR",li:"https://ch.linkedin.com/in/pettermade"},
+  {g:"members",n:"Sebastian Amme",r:"Founding Partner",c:"Haider, Amme & Partners",li:"https://www.linkedin.com/in/sebastianammeprofile/"},
+  {g:"members",n:"Skye Hauptman",r:"Co-Founder",c:"BlueMatrix",li:"https://uk.linkedin.com/in/skye-hauptman-179b81"},
+  {g:"members",n:"Stephan Winklbauer",r:"Partner",c:"AHW Rechtsanwälte",li:"https://at.linkedin.com/in/stephan-winklbauer-81ba002b"},
+  {g:"members",n:"Thomas Hillard",r:"Founder",c:"Augment Life",li:"https://www.linkedin.com/in/thomashillard/"},
+  {g:"members",n:"Tomislav Tomov",r:"Co-Founder of Presize",c:"Meta",li:"https://www.linkedin.com/in/tomislav-tomov/"},
+  {g:"members",n:"Vito Lomele",r:"Co-Founder · Founder of Jobrapido",c:"Stema",li:"https://www.linkedin.com/in/vitolomele"},
+  {g:"members",n:"Wouter van Wagtendonk",r:"Project Director",c:"TRESIOS",li:"https://www.linkedin.com/in/wouter-van-wagtendonk-07108a6/"},
+  {g:"members",n:"Jan Stammler",r:"Rechtsanwalt",c:"YPOG",li:"https://www.linkedin.com/in/jan-stammler-a3a506195/"},
+  {g:"members",n:"Sebastian Grote",r:"",c:"",li:"https://www.linkedin.com/in/grote-sebastian/"},
+  {g:"members",n:"Florian Metz",r:"",c:"",li:""},
+  {g:"members",n:"Julia",r:"Guest of Sebastian Grote",c:"",li:""},
+
+  {g:"speakers",n:"Emilian Popa",r:"Founder & CEO",c:"Expand Health",li:"https://www.linkedin.com/in/emilianpopa/"},
+  {g:"speakers",n:"Jesper Eugen-Olsen",r:"Professor · Co-Founder of ViroGates",c:"Copenhagen University Hospital",li:"https://www.linkedin.com/in/jesper-eugen-olsen-1646142/"},
+  {g:"speakers",n:"Juraj Priecel",r:"Co-Founder · FKC Board",c:"Efficio",li:"https://uk.linkedin.com/in/juraj-priecel-b999362"},
+  {g:"speakers",n:"Rasmus Houlind",r:"Chief Experience Officer",c:"Agillic",li:"https://www.linkedin.com/in/houlind/"},
+
+  {g:"team",n:"Enrico Zanvettor",r:"Club Manager",c:"Founders Kite Club",li:"https://www.linkedin.com/in/enricozanvettor/"},
+  {g:"team",n:"Sebastian Heitmann",r:"Partner · FKC Co-Founder",c:"Extantia Capital",li:"https://www.linkedin.com/in/sebastian-heitmann1/"},
+  {g:"team",n:"Liraz Lasry",r:"Co-Owner · Facilitator",c:"XPAND Executive Retreats",li:"https://il.linkedin.com/in/lirazlasry"}
+];
+
+const LABELS = {members:"Members", speakers:"Speakers & guests", team:"Team on the ground"};
+const ORDER = ["members","speakers","team"];
+const HUES = ["#3DBCAB","#9DEFC7","#F2A516","#7FD8C9","#C9E8A0","#F0C36B"];
+
+const initials = n => n.split(/\s+/).filter(w=>/[A-Za-zÀ-ÿ]/.test(w[0])).slice(0,2).map(w=>w[0].toUpperCase()).join("");
+const esc = s => (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function card(p, i){
+  const done = !!(p.sp && p.sp.length);
+  const avatar = p.img
+    ? `<div class="avatar"><img src="${esc(p.img)}" alt=""></div>`
+    : `<div class="avatar${p.r?"":" none"}" style="${p.r?`background:${HUES[i%HUES.length]}`:""}" aria-hidden="true">${initials(p.n)}</div>`;
+
+  const roleLine = p.r
+    ? `<p class="role">${esc(p.r)}${p.c?` · <b>${esc(p.c)}</b>`:""}</p>`
+    : `<p class="role unknown">Profile to come</p>`;
+
+  const bio = p.bio ? `<p class="bio">${esc(p.bio)}</p>` : "";
+
+  const sp = (p.sp && p.sp.length)
+    ? `<div class="slot"><span class="slot-label">Superpowers</span><div class="tags">${p.sp.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div></div>`
+    : `<div class="slot"><span class="slot-label">Superpowers</span><div class="slot-empty">Not filled in yet</div></div>`;
+
+  const want = p.want
+    ? `<div class="slot"><span class="slot-label">Looking for in Tarifa</span><p class="bio">${esc(p.want)}</p></div>`
+    : `<div class="slot"><span class="slot-label">Looking for in Tarifa</span><div class="slot-empty">Not filled in yet</div></div>`;
+
+  const li = p.li
+    ? `<a class="li" href="${esc(p.li)}" target="_blank" rel="noopener">LinkedIn ↗</a>`
+    : `<span class="li none">No link yet</span>`;
+
+  const state = done ? `<span class="state done">Complete</span>` : `<span class="state">Waiting on you</span>`;
+
+  return `<article class="card" data-g="${p.g}" data-done="${done?1:0}" data-s="${esc((p.n+" "+(p.c||"")+" "+(p.r||"")+" "+(p.sp||[]).join(" ")+" "+(p.want||"")).toLowerCase())}">
+    <div class="card-top">${avatar}<div class="who"><p class="name">${esc(p.n)}</p>${roleLine}</div></div>
+    ${bio}${sp}${want}
+    <div class="card-foot">${li}${state}</div>
+    <a class="card-btn" href="#" aria-disabled="true">${done ? "Edit my profile" : "Update my profile"}</a>
+  </article>`;
+}
+
+const out = document.getElementById("out");
+let k = 0;
+out.innerHTML = ORDER.map(g => {
+  const list = CREW.filter(p => p.g === g);
+  const cards = list.map(p => card(p, k++)).join("");
+  return `<section class="group" data-g="${g}">
+    <div class="group-head"><h2>${LABELS[g]}</h2><span class="n">${list.length}</span><span class="rule"></span></div>
+    <div class="grid">${cards}</div>
+  </section>`;
+}).join("");
+
+document.getElementById("total").textContent = CREW.length + " people";
+
+const filled = CREW.filter(p => p.sp && p.sp.length).length;
+const pct = Math.round(filled / CREW.length * 100);
+document.getElementById("bar").style.width = pct + "%";
+document.getElementById("progressTxt").textContent =
+  filled + " of " + CREW.length + " profiles filled in" + (filled === 0 ? " — be the first" : "");
+
+if (FORM_URL) {
+  const b = document.getElementById("formBtn");
+  b.href = FORM_URL; b.textContent = "Fill in your profile"; b.classList.remove("pending"); b.removeAttribute("aria-disabled");
+  b.target = "_blank"; b.rel = "noopener";
+  document.querySelectorAll(".card-btn").forEach(a => {
+    a.href = FORM_URL; a.classList.add("live"); a.removeAttribute("aria-disabled");
+    a.target = "_blank"; a.rel = "noopener";
+  });
+}
+
+const q = document.getElementById("q");
+const chips = [...document.querySelectorAll(".chip")];
+const countEl = document.getElementById("count");
+const noneEl = document.getElementById("none");
+let filter = "all";
+
+function apply(){
+  const term = q.value.trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll(".card").forEach(el => {
+    const vis = (filter === "all" || el.dataset.g === filter) && (!term || el.dataset.s.includes(term));
+    el.style.display = vis ? "" : "none";
+    if (vis) shown++;
+  });
+  document.querySelectorAll(".group").forEach(sec => {
+    sec.style.display = [...sec.querySelectorAll(".card")].some(c => c.style.display !== "none") ? "" : "none";
+  });
+  countEl.textContent = shown + " of " + CREW.length + " shown";
+  noneEl.style.display = shown ? "none" : "block";
+}
+q.addEventListener("input", apply);
+chips.forEach(c => c.addEventListener("click", () => {
+  filter = c.dataset.f;
+  chips.forEach(o => o.setAttribute("aria-pressed", String(o === c)));
+  apply();
+}));
+apply();
+</script>
+
+</body>
+</html>
