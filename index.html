@@ -202,6 +202,18 @@ h1 em{font-style:normal;color:var(--accent)}
   padding:3px 7px;border-radius:5px;background:var(--amber-soft);color:var(--amber);
 }
 .state.done{background:var(--accent-soft);color:var(--accent)}
+.talk{
+  display:flex;gap:8px;align-items:baseline;
+  background:var(--accent-soft);border-radius:8px;padding:8px 11px;
+}
+.talk .lbl{
+  font-family:"Archivo",system-ui,sans-serif;font-size:9px;font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--accent);flex:none;
+}
+.talk .ttl{
+  font-family:"Archivo",system-ui,sans-serif;font-size:12px;line-height:1.35;
+  color:var(--ink);font-weight:500;
+}
 .card-btn{
   display:block;text-align:center;text-decoration:none;
   font-family:"Archivo",system-ui,sans-serif;font-size:12.5px;font-weight:600;
@@ -266,7 +278,7 @@ footer{
     <div class="chips" role="group" aria-label="Filter by group">
       <button class="chip" data-f="all" aria-pressed="true">Everyone</button>
       <button class="chip" data-f="members" aria-pressed="false">Members</button>
-      <button class="chip" data-f="speakers" aria-pressed="false">Speakers &amp; guests</button>
+      <button class="chip" data-f="speakers" aria-pressed="false">Speakers</button>
       <button class="chip" data-f="team" aria-pressed="false">Team</button>
     </div>
     <div class="count" id="count"></div>
@@ -308,7 +320,6 @@ const CREW = [
   {g:"members",n:"Sebastian Amme",r:"Founding Partner",c:"Haider, Amme & Partners",li:"https://www.linkedin.com/in/sebastianamme"},
   {g:"members",n:"Skye Hauptman",r:"Co-Founder",c:"BlueMatrix",li:"https://uk.linkedin.com/in/skye-hauptman-179b81"},
   {g:"members",n:"Stephan Winklbauer",r:"Partner",c:"AHW Rechtsanwälte",li:"https://at.linkedin.com/in/stephan-winklbauer-81ba002b"},
-  {g:"members",n:"Thomas Hillard",r:"Founder",c:"Augment Life",li:"https://www.linkedin.com/in/thomashillard/"},
   {g:"members",n:"Tomislav Tomov",r:"Co-Founder of Presize",c:"Meta",li:"https://www.linkedin.com/in/tomislav-tomov/"},
   {g:"members",n:"Vito Lomele",r:"Co-Founder · Founder of Jobrapido",c:"Stema",li:"https://www.linkedin.com/in/vitolomele"},
   {g:"members",n:"Wouter van Wagtendonk",r:"Project Director",c:"TRESIOS",li:"https://www.linkedin.com/in/wouter-van-wagtendonk-07108a6/"},
@@ -317,14 +328,15 @@ const CREW = [
   {g:"members",n:"Florian Metz",r:"",c:"",li:""},
   {g:"members",n:"Julia Kruslin",r:"",c:"",li:""},
 
-  {g:"speakers",n:"Emilian Popa",r:"Founder & CEO",c:"Expand Health",li:"https://www.linkedin.com/in/emilianpopa/"},
+  {g:"speakers",n:"Thomas Hillard",r:"Founder & CEO",c:"Augment Life",li:"https://www.linkedin.com/in/thomashillard/",talk:"Sat · Longevity supplementation: facts vs. fiction"},
+  {g:"speakers",n:"Emilian Popa",r:"Founder & CEO",c:"Expand Health",li:"https://www.linkedin.com/in/emilianpopa/",talk:"Fri · Longevity business and the peptides rush"},
   {g:"speakers",n:"Jesper Eugen-Olsen",r:"Professor · Co-Founder of ViroGates",c:"Copenhagen University Hospital",li:"https://www.linkedin.com/in/jesper-eugen-olsen-1646142/"},
-  {g:"speakers",n:"Juraj Priecel",r:"Co-Founder · FKC Board",c:"Efficio",li:"https://uk.linkedin.com/in/juraj-priecel-b999362"},
-  {g:"speakers",n:"Rasmus Houlind",r:"Chief Experience Officer",c:"Agillic",li:"https://www.linkedin.com/in/houlind/"},
+  {g:"members",n:"Juraj Priecel",r:"Co-Founder · FKC Board",c:"Efficio",li:"https://uk.linkedin.com/in/juraj-priecel-b999362"},
+  {g:"speakers",n:"Rasmus Houlind",r:"Chief Experience Officer",c:"Agillic",li:"https://www.linkedin.com/in/houlind/",talk:"Sat · Hacking the anti-longevity factors that surround us"},
 
   {g:"team",n:"Enrico Zanvettor",r:"Club Manager",c:"Founders Kite Club",li:"https://www.linkedin.com/in/enricozanvettor/"},
-  {g:"team",n:"Sebastian Heitmann",r:"Partner · FKC Co-Founder",c:"Extantia Capital",li:"https://www.linkedin.com/in/sebastian-heitmann1/"},
-  {g:"team",n:"Liraz Lasry",r:"Co-Owner · Facilitator",c:"XPAND Executive Retreats",li:"https://il.linkedin.com/in/lirazlasry"}
+  {g:"team",n:"Sebastian Heitmann",r:"Partner · FKC Co-Founder",c:"Extantia Capital",li:"https://www.linkedin.com/in/sebastian-heitmann1/",talk:"Thu · Opening ceremony"},
+  {g:"team",n:"Liraz Lasry",r:"Co-Owner · Facilitator",c:"XPAND Executive Retreats",li:"https://il.linkedin.com/in/lirazlasry",talk:"Fri · Beyond lifespan: the science of staying fully alive"}
 ];
 
 /* PROFILES: filled in by the people themselves. Regenerated from the form responses. */
@@ -348,7 +360,7 @@ const PROFILES = {
 
 CREW.forEach(p => { const x = PROFILES[p.n]; if (x) Object.assign(p, x); });
 
-const LABELS = {members:"Members", speakers:"Speakers & guests", team:"Team on the ground"};
+const LABELS = {members:"Members", speakers:"Speakers", team:"Team on the ground"};
 const ORDER = ["members","speakers","team"];
 const HUES = ["#3DBCAB","#9DEFC7","#F2A516","#7FD8C9","#C9E8A0","#F0C36B"];
 
@@ -384,6 +396,7 @@ function card(p, i){
 
   return `<article class="card" data-g="${p.g}" data-done="${done?1:0}" data-s="${esc((p.n+" "+(p.c||"")+" "+(p.r||"")+" "+(p.sp||[]).join(" ")+" "+(p.want||"")).toLowerCase())}">
     <div class="card-top">${avatar}<div class="who"><p class="name">${esc(p.n)}</p>${roleLine}</div></div>
+    ${p.talk ? `<div class="talk"><span class="lbl">Talk</span><span class="ttl">${esc(p.talk)}</span></div>` : ""}
     ${bio}${sp}${want}
     <div class="card-foot">${li}${state}</div>
     <a class="card-btn" href="#" aria-disabled="true">${done ? "Edit my profile" : "Update my profile"}</a>
