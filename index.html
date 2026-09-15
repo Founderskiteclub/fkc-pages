@@ -328,7 +328,7 @@ const CREW = [
   {g:"members",n:"Florian Metz",r:"",c:"",li:""},
   {g:"members",n:"Julia Kruslin",r:"",c:"",li:""},
 
-  {g:"speakers",n:"Liraz Lasry",r:"Co-Owner · Facilitator",c:"Dr. Liraz Lasry Ventures",li:"https://il.linkedin.com/in/lirazlasry",talk:"Fri · Beyond lifespan: the science of staying fully alive"}
+  {g:"speakers",also:"team",n:"Liraz Lasry",r:"Co-Owner · Facilitator",c:"Dr. Liraz Lasry Ventures",li:"https://il.linkedin.com/in/lirazlasry",talk:"Fri · Beyond lifespan: the science of staying fully alive"}
   {g:"speakers",n:"Thomas Hillard",r:"Founder & CEO",c:"Augment Life",li:"https://www.linkedin.com/in/thomashillard/",talk:"Sat · Longevity supplementation: facts vs. fiction"},
   {g:"speakers",n:"Emilian Popa",r:"Founder & CEO",c:"Expand Health",li:"https://www.linkedin.com/in/emilianpopa/",talk:"Fri · Longevity business and the peptides rush"},
   {g:"speakers",n:"Jesper Eugen-Olsen",r:"Professor · Co-Founder of ViroGates",c:"Copenhagen University Hospital",li:"https://www.linkedin.com/in/jesper-eugen-olsen-1646142/"},
@@ -403,7 +403,7 @@ function card(p, i){
 
   const state = done ? `<span class="state done">Complete</span>` : `<span class="state">Waiting on you</span>`;
 
-  return `<article class="card" data-g="${p.g}" data-done="${done?1:0}" data-s="${esc((p.n+" "+(p.c||"")+" "+(p.r||"")+" "+(p.sp||[]).join(" ")+" "+(p.want||"")).toLowerCase())}">
+  return `<article class="card" data-g="${p.g}${p.also ? " " + p.also : ""}" data-done="${done?1:0}" data-s="${esc((p.n+" "+(p.c||"")+" "+(p.r||"")+" "+(p.sp||[]).join(" ")+" "+(p.want||"")).toLowerCase())}">
     <div class="card-top">${avatar}<div class="who"><p class="name">${esc(p.n)}</p>${roleLine}</div></div>
     ${p.talk ? `<div class="talk"><span class="lbl">Talk</span><span class="ttl">${esc(p.talk)}</span></div>` : ""}
     ${bio}${sp}${want}
@@ -451,7 +451,7 @@ function apply(){
   const term = q.value.trim().toLowerCase();
   let shown = 0;
   document.querySelectorAll(".card").forEach(el => {
-    const vis = (filter === "all" || el.dataset.g === filter) && (!term || el.dataset.s.includes(term));
+    const vis = (filter === "all" || el.dataset.g.split(" ").includes(filter)) && (!term || el.dataset.s.includes(term));
     el.style.display = vis ? "" : "none";
     if (vis) shown++;
   });
