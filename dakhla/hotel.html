@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>FKC Dakhla 2027 · Panel hotel</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--deep:#0F1E1D;--sea:#3DBCAB;--beach:#F4E5A7;--sky:#F1F9F8;--white:#FAFDFD;--muted:#5b6b69;--line:#dde8e6;--danger:#b3261e}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--white);color:var(--deep);font:15px/1.5 Inter,system-ui,sans-serif}
+  h1,h2,h3{font-family:Archivo,Inter,sans-serif;margin:0}
+  .top{background:var(--deep);color:var(--white);padding:22px 0}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+  .top h1{font-size:24px}.top h1 span{color:var(--beach)}
+  .top p{margin:6px 0 0;color:#cfe3df;font-size:14px}
+  .test{background:#fdf1d8;color:#8a5a00;padding:10px 16px;font-size:14px;font-weight:600;text-align:center}
+  .help{background:var(--sky);border-radius:14px;padding:16px 18px;margin:20px 0;font-size:14px}
+  .help ol{margin:6px 0 0;padding-left:20px}
+  .inv{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+  .invc{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}
+  .invc h3{font-size:15px;margin-bottom:8px}
+  .nights{display:flex;flex-wrap:wrap;gap:6px}
+  .n{font-size:12px;border-radius:8px;padding:4px 8px;background:#e6f7f4;color:#106b60}
+  .n.low{background:#fdf1d8;color:#8a5a00}.n.out{background:#f9e1df;color:var(--danger)}
+  .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:18px 0 12px}
+  .bar button,.f{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font:600 13px Inter,sans-serif;cursor:pointer;color:var(--deep)}
+  .f.on{background:var(--deep);color:var(--beach);border-color:var(--deep)}
+  .room{border:1px solid var(--line);border-radius:16px;margin-bottom:14px;background:#fff;overflow:hidden}
+  .rh{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--sky)}
+  .rh b{font-family:Archivo}
+  .rh span{font-size:13px;color:var(--muted)}
+  .g{display:grid;grid-template-columns:1.3fr 1fr 2fr;gap:14px;padding:14px 16px;border-top:1px solid var(--line);align-items:start}
+  .who b{display:block}.who small{color:var(--muted);display:block;word-break:break-all}
+  .amt{font:800 18px Archivo,sans-serif}.amt small{font:500 12px Inter,sans-serif;color:var(--muted);display:block}
+  .chip{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;margin-top:6px}
+  .REQUESTED{background:#fdf1d8;color:#8a5a00}.LINK_SENT{background:#e3edff;color:#1d4fb8}
+  .EXPIRED{background:#f9e1df;color:var(--danger)}.g.exp{background:#fff7f6}.warn{color:var(--danger);font-weight:600}
+  .PAID{background:#e6f7f4;color:#106b60}.COMP{background:#eee;color:#444}.CANCELLED{background:#f9e1df;color:var(--danger)}
+  .act input[type=url],.act input[type=text]{width:100%;padding:9px 10px;border:1px solid #c9d8d5;border-radius:9px;font:inherit;margin-bottom:8px}
+  .btns{display:flex;flex-wrap:wrap;gap:6px}
+  .b{border:0;border-radius:9px;padding:8px 12px;font:600 13px Inter,sans-serif;cursor:pointer}
+  .b1{background:var(--sea);color:var(--deep)}.b2{background:var(--deep);color:var(--beach)}.b3{background:#fff;border:1px solid #e3b4b0;color:var(--danger)}.b4{background:#fff;border:1px solid var(--line);color:var(--deep)}
+  .meta{font-size:12px;color:var(--muted);margin-top:6px}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--deep);color:var(--beach);padding:10px 18px;border-radius:999px;font-weight:600;display:none;z-index:9}
+  .empty{padding:40px;text-align:center;color:var(--muted)}
+  @media (max-width:800px){.inv{grid-template-columns:1fr}.g{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap"><h1>FKC Dakhla 2027 · <span>Panel de reservas</span></h1><p id="sub">Lagon Energy · cargando…</p></div></div>
+<div id="testbar"></div>
+<div class="wrap">
+  <div class="help"><b>Cómo funciona</b>
+    <ol>
+      <li>Cuando llega una solicitud nueva, recibes un email y aparece aquí con estado <b>REQUESTED</b>.</li>
+      <li>Pega el <b>link de pago</b> de cada huésped y pulsa <b>Enviar link</b>. El huésped lo recibe automáticamente por email.</li>
+      <li>Cuando el huésped haya pagado, pulsa <b>Marcar pagado</b>. Le llega la confirmación.</li>
+      <li>Los links de pago <b>duran 48 h</b>. Si uno caduca sin pagar, te llega un aviso y la reserva sale en rojo como <b>«Link caducado»</b>: pega el link NUEVO y pulsa <b>Enviar link nuevo</b>. Puedes mandar todos los que hagan falta.</li>
+      <li>En las habitaciones compartidas cada persona paga su mitad, con su propio link.</li>
+      <li>Los huéspedes <b>nunca ven tu email</b>: todos los mensajes salen de team@founderskiteclub.com y sus respuestas llegan a Enrico. Si alguno te escribe directamente, reenvíalo a team@.</li>
+    </ol>
+  </div>
+  <div class="inv" id="inv"></div>
+  <div class="bar" id="bar"></div>
+  <div id="list"><div class="empty">Cargando…</div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var API = 'https://script.google.com/macros/s/AKfycbw4QByT6XaBbv1B6sWMAK8Q_ZXYCKXa_eyP2bqXE5XXE-Vd14GOtb096oeUqPwUfngE0A/exec';
+function api(fn, args){
+  return fetch(API, { method: 'POST', credentials: 'omit', redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: fn, args: args || [] }) })
+    .then(function(r){ return r.json(); })
+    .then(function(j){ if (!j.__ok) throw new Error(j.error || 'Error'); return j.result; });
+}
+var KEY = new URLSearchParams(location.search).get('k') || '';
+var DATA = null, FILTER = 'OPEN';
+var LABEL = {REQUESTED:'Pendiente de link', LINK_SENT:'Link enviado', PAID:'Pagado', COMP:'Gratis (FKC)', CANCELLED:'Cancelada', EXPIRED:'Link caducado'};
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function fmt(n){ return Number(n||0).toLocaleString('es-ES',{maximumFractionDigits:2}); }
+function toast(m){ var t=$('toast'); t.textContent=m; t.style.display='block'; setTimeout(function(){t.style.display='none';},2600); }
+
+function call(fn, args, okMsg){
+  document.body.style.cursor='wait';
+  api(fn, [KEY].concat(args||[])).then(function(d){ document.body.style.cursor=''; render(d); if(okMsg) toast(okMsg); })
+    .catch(function(e){ document.body.style.cursor='';
+      if (!DATA) $('list').innerHTML = '<div class="empty">' + esc(e.message || e) + '</div>'; else alert(e.message || e); });
+}
+
+function render(d){
+  DATA = d;
+  $('sub').textContent = 'Lagon Energy · ' + d.hotelRef;
+  $('testbar').innerHTML = d.testMode ? '<div class="test">MODO PRUEBA: los emails no salen a los huéspedes, solo a team@founderskiteclub.com</div>' : '';
+  $('inv').innerHTML = d.types.map(function(t){
+    return '<div class="invc"><h3>' + esc(t.name) + ' · ' + t.units + ' hab.</h3><div class="nights">' +
+      d.nights.map(function(n,i){ var f=t.free[i]; return '<span class="n ' + (f<=0?'out':(f<=2?'low':'')) + '">' + esc(n.label) + ': ' + f + ' libres</span>'; }).join('') +
+      '</div></div>';
+  }).join('');
+  var counts = {OPEN:0, ALL:d.rows.length};
+  d.rows.forEach(function(r){ counts[r.status]=(counts[r.status]||0)+1; if(r.status==='REQUESTED'||r.status==='LINK_SENT') counts.OPEN++; if(r.expired) counts.EXPIRED=(counts.EXPIRED||0)+1; });
+  var filters = [['OPEN','Por gestionar'],['REQUESTED',LABEL.REQUESTED],['LINK_SENT',LABEL.LINK_SENT],['EXPIRED',LABEL.EXPIRED],['PAID',LABEL.PAID],['COMP',LABEL.COMP],['CANCELLED',LABEL.CANCELLED],['ALL','Todas']];
+  $('bar').innerHTML = filters.map(function(f){ return '<span class="f' + (FILTER===f[0]?' on':'') + '" onclick="setF(\'' + f[0] + '\')">' + f[1] + ' (' + (counts[f[0]]||0) + ')</span>'; }).join('') +
+    '<button onclick="call(\'adminData\',[],\'Actualizado\')">↻ Actualizar</button>';
+  renderList();
+}
+function setF(f){ FILTER=f; render(DATA); }
+
+function renderList(){
+  var rows = DATA.rows.filter(function(r){
+    return FILTER==='ALL' || r.status===FILTER || (FILTER==='OPEN' && (r.status==='REQUESTED'||r.status==='LINK_SENT')) || (FILTER==='EXPIRED' && r.expired);
+  });
+  if (!rows.length) { $('list').innerHTML = '<div class="empty">No hay reservas en esta vista.</div>'; return; }
+  var groups = {}, order = [];
+  rows.forEach(function(r){ if(!groups[r.roomRef]){groups[r.roomRef]=[];order.push(r.roomRef);} groups[r.roomRef].push(r); });
+  $('list').innerHTML = order.map(function(ref){
+    var g = groups[ref], r0 = g[0];
+    return '<div class="room"><div class="rh"><div><b>' + esc(ref) + ' · ' + esc(r0.roomType) + '</b></div>' +
+      '<span>' + esc(r0.arrivalLabel) + ' → ' + esc(r0.departureLabel) + ' · ' + r0.nights + ' noches' + (r0.matchMe ? ' · 👥 busca compañero' : '') + '</span></div>' +
+      g.map(rowHtml).join('') + '</div>';
+  }).join('');
+}
+
+function rowHtml(r){
+  var id = esc(r.id);
+  var acts = '';
+  if (r.status !== 'CANCELLED' && r.status !== 'COMP') {
+    acts += '<input type="url" id="l_' + id + '" placeholder="' + (r.expired ? 'Pega aquí el link NUEVO del hotel' : 'https://… link de pago') + '" value="' + (r.expired ? '' : esc(r.payLink)) + '">' +
+      '<div class="btns">' +
+      (r.status !== 'PAID' ? '<button class="b b1" onclick="sendLink(\'' + id + '\')">' + (r.expired ? 'Enviar link nuevo' : (r.payLink ? 'Reenviar link' : 'Enviar link')) + '</button>' : '') +
+      (r.status !== 'PAID' ? '<button class="b b2" onclick="paid(\'' + id + '\')">Marcar pagado</button>' : '') +
+      '<button class="b b3" onclick="cancelB(\'' + id + '\')">Cancelar</button></div>';
+  }
+  acts += '<input type="text" id="n_' + id + '" placeholder="Notas del hotel" value="' + esc(r.hotelNotes) + '" style="margin-top:8px">' +
+    '<div class="btns"><button class="b b4" onclick="note(\'' + id + '\')">Guardar nota</button></div>';
+  var meta = [];
+  if (r.ticket) meta.push('Ticket FKC: ' + esc(r.ticket));
+  if (r.roommates) meta.push('Comparte con: ' + esc(r.roommates === '(match me)' ? 'FKC le busca compañero' : r.roommates));
+  if (r.notes) meta.push('Nota huésped: ' + esc(r.notes));
+  if (r.linkSent) meta.push('Link enviado: ' + esc(r.linkSent) + (r.linkCount > 1 ? ' (link nº ' + r.linkCount + ')' : ''));
+  if (r.status === 'LINK_SENT' && !r.expired && r.expiresEs) meta.push('<span class="warn">Caduca ' + esc(r.expiresEs) + ' (quedan ' + r.hoursLeft + ' h)</span>');
+  if (r.expired) meta.push('<span class="warn">El link caducó el ' + esc(r.expiresEs) + ' sin pago: pega uno nuevo</span>');
+  if (r.paidAt) meta.push('Pagado: ' + esc(r.paidAt));
+  return '<div class="g' + (r.expired ? ' exp' : '') + '"><div class="who"><b>' + esc(r.guest) + '</b><small>' + esc(r.email) + '</small>' + (r.phone ? '<small>' + esc(r.phone) + '</small>' : '') +
+    '<small>' + id + '</small><span class="chip ' + (r.expired ? 'EXPIRED' : esc(r.status)) + '">' + (r.expired ? LABEL.EXPIRED : (LABEL[r.status]||esc(r.status))) + '</span></div>' +
+    '<div class="amt">' + fmt(r.totalMad) + ' MAD<small>habitación ' + fmt(r.shareMad) + ' + tasa ' + fmt(r.taxMad) + '</small></div>' +
+    '<div class="act">' + acts + (meta.length ? '<div class="meta">' + meta.join(' · ') + '</div>' : '') + '</div></div>';
+}
+
+function sendLink(id){
+  var url = $('l_' + id).value.trim();
+  if (!/^https?:\/\/\S+$/i.test(url)) return alert('Pega un link de pago válido (https://…)');
+  var row = DATA.rows.filter(function(x){ return x.id === id; })[0];
+  if (row && row.expired && url === row.payLink) return alert('Ese link ya ha caducado. Pega el link NUEVO del hotel.');
+  if (!confirm('¿Enviar este link de pago por email al huésped ' + id + '?')) return;
+  call('adminSendLink', [id, url], 'Link enviado ✔');
+}
+function paid(id){ if (confirm('¿Confirmas que ' + id + ' ha pagado? Se le enviará la confirmación.')) call('adminMarkPaid', [id], 'Marcado como pagado ✔'); }
+function cancelB(id){ var why = prompt('¿Cancelar la reserva ' + id + '? Motivo (opcional):'); if (why !== null) call('adminCancel', [id, why], 'Reserva cancelada'); }
+function note(id){ call('adminSaveNote', [id, $('n_' + id).value], 'Nota guardada'); }
+
+call('adminData');
+</script>
+</body>
+</html>
