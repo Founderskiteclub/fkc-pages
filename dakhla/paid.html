@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>FKC Dakhla 2027 · I've paid</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%AA%81%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep:#0F1E1D; --sea:#3DBCAB; --foam:#9DEFC7; --beach:#F4E5A7;
+    --sky:#F1F9F8; --white:#FAFDFD; --ink:#0F1E1D; --muted:#5b6b69; --line:#dde8e6; --danger:#b3261e;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--white);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif}
+  h1,h2,h3{font-family:Archivo,Inter,sans-serif;margin:0;letter-spacing:-.01em}
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px}
+  .hero{background:radial-gradient(900px 300px at 80% -10%,#0d4a45 0%,transparent 60%),var(--deep);color:var(--white);padding:34px 0 38px}
+  .brand{font:700 12px/1 Archivo,sans-serif;letter-spacing:.22em;color:var(--beach);text-transform:uppercase}
+  .hero h1{font-size:clamp(28px,6vw,40px);font-weight:800;line-height:1.1;margin:12px 0 0}
+  .hero h1 span{color:var(--beach)}
+  main{padding:26px 0 40px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+  .sum{background:var(--sky);border-radius:12px;padding:12px 14px;font-size:15px;margin:12px 0 0}
+  .sum div{display:flex;justify-content:space-between;gap:12px;padding:3px 0}
+  .sum span{color:var(--muted)}
+  .step{display:flex;gap:12px;align-items:flex-start;margin:16px 0}
+  .num{flex:0 0 30px;height:30px;border-radius:50%;background:var(--deep);color:var(--beach);display:grid;place-items:center;font:700 14px Archivo,sans-serif}
+  .step p{margin:2px 0 8px}
+  .btn{display:inline-block;border:0;border-radius:10px;padding:12px 18px;font:700 15px Inter,sans-serif;text-decoration:none;cursor:pointer}
+  .wa{background:#25D366;color:#fff}
+  .go{background:var(--deep);color:var(--beach);width:100%;margin-top:6px}
+  .go:disabled{opacity:.4;cursor:not-allowed}
+  label.chk{display:flex;gap:10px;align-items:flex-start;background:var(--sky);border-radius:10px;padding:12px;cursor:pointer}
+  label.chk input{width:20px;height:20px;margin-top:2px;flex:0 0 auto}
+  .ok{background:#E6F7F4;border:2px solid var(--sea);border-radius:16px;padding:20px}
+  .ok h2{font-size:22px;margin-bottom:6px}
+  .err{background:#f9e1df;color:var(--danger);border-radius:12px;padding:14px;font-weight:600}
+  .muted{color:var(--muted);font-size:14px}
+  .loading{text-align:center;color:var(--muted);padding:40px 0}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <div class="brand">Founders Kite Club</div>
+  <h1>FKC <span>Dakhla 2027</span> · payment</h1>
+</div></header>
+<main class="wrap" id="app"><div class="loading">Loading your booking…</div></main>
+
+<script>
+var API = 'https://script.google.com/macros/s/AKfycbw4QByT6XaBbv1B6sWMAK8Q_ZXYCKXa_eyP2bqXE5XXE-Vd14GOtb096oeUqPwUfngE0A/exec';
+function api(fn, args){
+  return fetch(API, { method: 'POST', credentials: 'omit', redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: fn, args: args || [] }) })
+    .then(function(r){ return r.json(); })
+    .then(function(j){ if (!j.__ok) throw new Error(j.error || 'Error'); return j.result; });
+}
+var q = new URLSearchParams(location.search), B = q.get('b') || '', T = q.get('t') || '';
+var $ = function(id){ return document.getElementById(id); };
+var esc = function(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); };
+var fmt = function(n){ return Number(n).toLocaleString('en-US',{maximumFractionDigits:2}); };
+
+function summary(d){
+  return '<div class="sum"><div><span>Room</span><b>' + esc(d.roomType) + '</b></div>' +
+    '<div><span>Dates</span><b>' + esc(d.dates) + '</b></div>' +
+    '<div><span>Your share</span><b>' + fmt(d.totalMad) + ' MAD (≈ ' + esc(d.totalEur) + ' €)</b></div>' +
+    '<div><span>Reference</span><b>' + esc(d.roomRef) + ' · ' + esc(d.id) + '</b></div></div>';
+}
+function waLink(d){
+  return d.whatsappLink + '?text=' + encodeURIComponent('Hi Enrico! Here is my payment screenshot for FKC Dakhla 2027, booking ' + d.id + ' (' + d.roomType + ').');
+}
+function waBtn(d, label){ return '<a class="btn wa" href="' + esc(waLink(d)) + '" target="_blank" rel="noopener">' + (label || 'Send screenshot on WhatsApp') + '</a>'; }
+
+function done(d){
+  $('app').innerHTML = '<div class="ok"><h2>✅ Thanks, ' + esc(d.first) + '! Payment noted.</h2>' +
+    '<p>You won\'t get any more payment reminders. As soon as the hotel confirms your payment, you\'ll receive your <b>final confirmation</b> by email.</p>' +
+    summary(d) +
+    '<p class="muted" style="margin-top:14px">Haven\'t sent the screenshot to Enrico yet? Please do it now, it helps the hotel find your payment faster.</p>' +
+    waBtn(d) + '</div>';
+}
+
+function render(d){
+  if (d.status === 'PAID') {
+    $('app').innerHTML = '<div class="ok"><h2>✅ Your room is confirmed, ' + esc(d.first) + '!</h2><p>The hotel has already confirmed your payment. See you in Dakhla 🪁</p>' + summary(d) + '</div>';
+    return;
+  }
+  if (d.status === 'REPORTED') { done(d); return; }
+  if (d.status === 'CANCELLED') { $('app').innerHTML = '<div class="err">This booking is cancelled. Questions? Write to team@founderskiteclub.com.</div>'; return; }
+  if (d.status === 'REQUESTED') {
+    $('app').innerHTML = '<div class="card"><h2>Hi ' + esc(d.first) + '!</h2><p>You haven\'t received your payment link yet. It will arrive by email soon: keep an eye on your inbox (and spam).</p>' + summary(d) + '</div>';
+    return;
+  }
+  $('app').innerHTML =
+    '<div class="card"><h2>Hi ' + esc(d.first) + ', already paid your room?</h2>' +
+    '<p class="muted" style="margin:6px 0 0">The hotel\'s payment page doesn\'t notify us automatically, so we need these 2 quick steps from you.</p>' +
+    summary(d) +
+    '<div class="step"><div class="num">1</div><div><p>📸 <b>Send the screenshot of your payment</b> (the confirmation screen) <b>to Enrico on WhatsApp</b>: ' + esc(d.whatsapp) + '</p>' + waBtn(d) + '</div></div>' +
+    '<div class="step"><div class="num">2</div><div style="flex:1"><p><b>Confirm here</b> so the reminders stop.</p>' +
+    '<label class="chk"><input type="checkbox" id="c"> <span>I\'ve paid my room and sent the screenshot to Enrico.</span></label>' +
+    '<button class="btn go" id="go" disabled>I\'ve paid ✓</button><div id="e"></div></div></div>' +
+    '<p class="muted">Not paid yet? Then just close this page and use the payment link in your email (it\'s valid for 48 hours).</p></div>';
+  $('c').onchange = function(){ $('go').disabled = !this.checked; };
+  $('go').onclick = function(){
+    $('go').disabled = true; $('go').textContent = 'Saving…';
+    api('reportPaid', [B, T]).then(done).catch(function(err){
+      $('go').disabled = false; $('go').textContent = 'I\'ve paid ✓';
+      $('e').innerHTML = '<div class="err" style="margin-top:10px">' + esc(err.message) + '</div>';
+    });
+  };
+}
+
+if (!B || !T) $('app').innerHTML = '<div class="err">This link is incomplete. Please use the “I\'ve paid” button in your payment email, or write to team@founderskiteclub.com.</div>';
+else api('reportInfo', [B, T]).then(render).catch(function(err){ $('app').innerHTML = '<div class="err">' + esc(err.message) + '</div>'; });
+</script>
+</body>
+</html>

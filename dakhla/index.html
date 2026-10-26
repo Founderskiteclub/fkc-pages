@@ -154,7 +154,7 @@ function render(d){
        '<div class="steps">' +
        '<div class="step"><b>1</b><p><strong>Request your room</strong> below. Choose the room type and your nights.</p></div>' +
        '<div class="step"><b>2</b><p><strong>Get your payment link</strong> by email from us (it\'s the hotel\'s secure payment page), usually within 48h.</p></div>' +
-       '<div class="step"><b>3</b><p><strong>Pay within ' + d.linkHours + ' hours</strong> (the link expires after that), then <strong>send a screenshot of the payment to Enrico on WhatsApp</strong> (<a href="https://wa.me/34697909135">+34 697 909 135</a>) and you\'re confirmed.</p></div>' +
+       '<div class="step"><b>3</b><p><strong>Pay within ' + d.linkHours + ' hours</strong> (the link expires after that). 📸 <strong>Take a screenshot of the payment</strong>, send it to Enrico on WhatsApp (<a href="https://wa.me/34697909135">+34 697 909 135</a>) and tap <strong>“I\'ve paid”</strong> in the email. Done!</p></div>' +
        '</div><p class="note">Sharing a bungalow? Each person gets their own link and pays their own half. Prices below are per person, tourist tax (' + d.taxMad + ' MAD/night) included.</p>' +
        '<p class="note"><strong>Questions about your room?</strong> Write to ' + esc(d.contact) + '. Please don\'t contact the hotel directly: we handle everything with them.</p></section>';
 
@@ -296,6 +296,7 @@ function submit(ev){
     var ok = $('ok');
     ok.innerHTML = '<h3>🎉 Request sent!</h3><p>Your reference is <strong>' + esc(res.roomRef) + '</strong>. ' + (selOcc() === 2 ? 'Each person pays' : 'You pay') + ': <strong>' + fmt(res.totalMad) + ' MAD</strong> (≈ ' + res.totalEur + ' €).</p>' +
       '<p>We\'ve emailed you a summary. The hotel\'s payment link will follow by email soon. <strong>It\'s valid for ' + D.linkHours + ' hours only</strong>, so pay as soon as it arrives to secure the room.</p>' +
+      '<p>📸 <strong>When you pay, take a screenshot of the payment confirmation</strong> and send it to Enrico on WhatsApp (+34 697 909 135). Then tap “I\'ve paid” in the payment email.</p>' +
       '<p class="note">Didn\'t get the email? Check your spam folder or write to ' + esc(D.contact) + '.</p>';
     ok.style.display = 'block';
     ok.scrollIntoView({behavior:'smooth',block:'center'});

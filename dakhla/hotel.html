@@ -37,6 +37,7 @@
   .chip{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;margin-top:6px}
   .REQUESTED{background:#fdf1d8;color:#8a5a00}.LINK_SENT{background:#e3edff;color:#1d4fb8}
   .EXPIRED{background:#f9e1df;color:var(--danger)}.g.exp{background:#fff7f6}.warn{color:var(--danger);font-weight:600}
+  .REPORTED{background:#efe3ff;color:#6b3fa0}.g.rep{background:#faf6ff}
   .PAID{background:#e6f7f4;color:#106b60}.COMP{background:#eee;color:#444}.CANCELLED{background:#f9e1df;color:var(--danger)}
   .act input[type=url],.act input[type=text]{width:100%;padding:9px 10px;border:1px solid #c9d8d5;border-radius:9px;font:inherit;margin-bottom:8px}
   .btns{display:flex;flex-wrap:wrap;gap:6px}
@@ -56,7 +57,7 @@
     <ol>
       <li>Cuando llega una solicitud nueva, recibes un email y aparece aquí con estado <b>REQUESTED</b>.</li>
       <li>Pega el <b>link de pago</b> de cada huésped y pulsa <b>Enviar link</b>. El huésped lo recibe automáticamente por email.</li>
-      <li>Cuando el huésped haya pagado, pulsa <b>Marcar pagado</b>. Le llega la confirmación.</li>
+      <li>Cuando el huésped dice que ya ha pagado (con el botón «I've paid» de su email, o mandando la captura a Enrico), la reserva pasa a <b>«Pago comunicado»</b> (en morado) y deja de recibir recordatorios. Comprueba con el hotel que el dinero ha llegado y pulsa <b>Marcar pagado</b>: le llega la confirmación.</li>
       <li>Los links de pago <b>duran 48 h</b>. Si uno caduca, la reserva sale en rojo como <b>«Link caducado»</b>. Enrico habla con el cliente y, si hace falta, te pide un link nuevo: lo pegas y pulsas <b>Enviar link nuevo</b>. Puedes mandar todos los que hagan falta.</li>
       <li>En las habitaciones compartidas cada persona paga su mitad, con su propio link.</li>
       <li>Los huéspedes <b>nunca ven tu email</b>: todos los mensajes salen de team@founderskiteclub.com y sus respuestas llegan a Enrico. Si alguno te escribe directamente, reenvíalo a team@.</li>
@@ -78,7 +79,7 @@ function api(fn, args){
 }
 var KEY = new URLSearchParams(location.search).get('k') || '';
 var DATA = null, FILTER = 'OPEN';
-var LABEL = {REQUESTED:'Pendiente de link', LINK_SENT:'Link enviado', PAID:'Pagado', COMP:'Gratis (FKC)', CANCELLED:'Cancelada', EXPIRED:'Link caducado'};
+var LABEL = {REQUESTED:'Pendiente de link', LINK_SENT:'Link enviado', REPORTED:'Pago comunicado', PAID:'Pagado', COMP:'Gratis (FKC)', CANCELLED:'Cancelada', EXPIRED:'Link caducado'};
 function $(id){ return document.getElementById(id); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
 function fmt(n){ return Number(n||0).toLocaleString('es-ES',{maximumFractionDigits:2}); }
@@ -101,8 +102,8 @@ function render(d){
       '</div></div>';
   }).join('');
   var counts = {OPEN:0, ALL:d.rows.length};
-  d.rows.forEach(function(r){ counts[r.status]=(counts[r.status]||0)+1; if(r.status==='REQUESTED'||r.status==='LINK_SENT') counts.OPEN++; if(r.expired) counts.EXPIRED=(counts.EXPIRED||0)+1; });
-  var filters = [['OPEN','Por gestionar'],['REQUESTED',LABEL.REQUESTED],['LINK_SENT',LABEL.LINK_SENT],['EXPIRED',LABEL.EXPIRED],['PAID',LABEL.PAID],['COMP',LABEL.COMP],['CANCELLED',LABEL.CANCELLED],['ALL','Todas']];
+  d.rows.forEach(function(r){ counts[r.status]=(counts[r.status]||0)+1; if(r.status==='REQUESTED'||r.status==='LINK_SENT'||r.status==='REPORTED') counts.OPEN++; if(r.expired) counts.EXPIRED=(counts.EXPIRED||0)+1; });
+  var filters = [['OPEN','Por gestionar'],['REQUESTED',LABEL.REQUESTED],['LINK_SENT',LABEL.LINK_SENT],['EXPIRED',LABEL.EXPIRED],['REPORTED',LABEL.REPORTED],['PAID',LABEL.PAID],['COMP',LABEL.COMP],['CANCELLED',LABEL.CANCELLED],['ALL','Todas']];
   $('bar').innerHTML = filters.map(function(f){ return '<span class="f' + (FILTER===f[0]?' on':'') + '" onclick="setF(\'' + f[0] + '\')">' + f[1] + ' (' + (counts[f[0]]||0) + ')</span>'; }).join('') +
     '<button onclick="call(\'adminData\',[],\'Actualizado\')">↻ Actualizar</button>';
   renderList();
@@ -111,7 +112,7 @@ function setF(f){ FILTER=f; render(DATA); }
 
 function renderList(){
   var rows = DATA.rows.filter(function(r){
-    return FILTER==='ALL' || r.status===FILTER || (FILTER==='OPEN' && (r.status==='REQUESTED'||r.status==='LINK_SENT')) || (FILTER==='EXPIRED' && r.expired);
+    return FILTER==='ALL' || r.status===FILTER || (FILTER==='OPEN' && (r.status==='REQUESTED'||r.status==='LINK_SENT'||r.status==='REPORTED')) || (FILTER==='EXPIRED' && r.expired);
   });
   if (!rows.length) { $('list').innerHTML = '<div class="empty">No hay reservas en esta vista.</div>'; return; }
   var groups = {}, order = [];
@@ -131,6 +132,7 @@ function rowHtml(r){
     acts += '<input type="url" id="l_' + id + '" placeholder="' + (r.expired ? 'Pega aquí el link NUEVO del hotel' : 'https://… link de pago') + '" value="' + (r.expired ? '' : esc(r.payLink)) + '">' +
       '<div class="btns">' +
       (r.status !== 'PAID' ? '<button class="b b1" onclick="sendLink(\'' + id + '\')">' + (r.expired ? 'Enviar link nuevo' : (r.payLink ? 'Reenviar link' : 'Enviar link')) + '</button>' : '') +
+      (r.status === 'LINK_SENT' ? '<button class="b b4" onclick="reported(\'' + id + '\')">Pago comunicado</button>' : '') +
       (r.status !== 'PAID' ? '<button class="b b2" onclick="paid(\'' + id + '\')">Marcar pagado</button>' : '') +
       '<button class="b b3" onclick="cancelB(\'' + id + '\')">Cancelar</button></div>';
   }
@@ -143,8 +145,9 @@ function rowHtml(r){
   if (r.linkSent) meta.push('Link enviado: ' + esc(r.linkSent) + (r.linkCount > 1 ? ' (link nº ' + r.linkCount + ')' : ''));
   if (r.status === 'LINK_SENT' && !r.expired && r.expiresEs) meta.push('<span class="warn">Caduca ' + esc(r.expiresEs) + ' (quedan ' + r.hoursLeft + ' h)</span>');
   if (r.expired) meta.push('<span class="warn">El link caducó el ' + esc(r.expiresEs) + ' sin pago: pega uno nuevo</span>');
+  if (r.reportedAt) meta.push('<span style="color:#6b3fa0;font-weight:600">Pago comunicado: ' + esc(r.reportedAt) + ' · comprobar con el hotel</span>');
   if (r.paidAt) meta.push('Pagado: ' + esc(r.paidAt));
-  return '<div class="g' + (r.expired ? ' exp' : '') + '"><div class="who"><b>' + esc(r.guest) + '</b><small>' + esc(r.email) + '</small>' + (r.phone ? '<small>' + esc(r.phone) + '</small>' : '') +
+  return '<div class="g' + (r.expired ? ' exp' : '') + (r.status === 'REPORTED' ? ' rep' : '') + '"><div class="who"><b>' + esc(r.guest) + '</b><small>' + esc(r.email) + '</small>' + (r.phone ? '<small>' + esc(r.phone) + '</small>' : '') +
     '<small>' + id + '</small><span class="chip ' + (r.expired ? 'EXPIRED' : esc(r.status)) + '">' + (r.expired ? LABEL.EXPIRED : (LABEL[r.status]||esc(r.status))) + '</span></div>' +
     '<div class="amt">' + fmt(r.totalMad) + ' MAD<small>habitación ' + fmt(r.shareMad) + ' + tasa ' + fmt(r.taxMad) + '</small></div>' +
     '<div class="act">' + acts + (meta.length ? '<div class="meta">' + meta.join(' · ') + '</div>' : '') + '</div></div>';
@@ -158,6 +161,7 @@ function sendLink(id){
   if (!confirm('¿Enviar este link de pago por email al huésped ' + id + '?')) return;
   call('adminSendLink', [id, url], 'Link enviado ✔');
 }
+function reported(id){ if (confirm('¿Marcar ' + id + ' como «Pago comunicado»? Dejará de recibir recordatorios y Mercedes recibirá un aviso para comprobarlo con el hotel.')) call('adminReport', [id], 'Pago comunicado ✔'); }
 function paid(id){ if (confirm('¿Confirmas que ' + id + ' ha pagado? Se le enviará la confirmación.')) call('adminMarkPaid', [id], 'Marcado como pagado ✔'); }
 function cancelB(id){ var why = prompt('¿Cancelar la reserva ' + id + '? Motivo (opcional):'); if (why !== null) call('adminCancel', [id, why], 'Reserva cancelada'); }
 function note(id){ call('adminSaveNote', [id, $('n_' + id).value], 'Nota guardada'); }
