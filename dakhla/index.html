@@ -146,8 +146,6 @@ function leftBadge(t){
 
 function render(d){
   D = d;
-  document.getElementById('pills').insertAdjacentHTML('beforeend',
-    '<span class="pill hot">Book by ' + esc(d.deadlineLabel) + '</span>');
   var nN = d.blockNights || d.nights.filter(function(n){ return n.date >= d.blockStart && n.date < d.blockEnd; }).length;
   var h = '';
 
