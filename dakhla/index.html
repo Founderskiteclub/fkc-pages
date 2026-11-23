@@ -176,7 +176,7 @@ function render(d){
     bN.forEach(function(n){ var f = t.free[n.date]; h += '<td class="' + (f<=0?'c0':(f<=2?'c1':'')) + '">' + (f<=0?'Full':f) + '</td>'; });
     h += '</tr>';
   });
-  h += '</tbody></table></div><p class="note">Bungalows left per night in the FKC block (8–14 March), single or shared. You can also book other nights between 1 and 31 March: FKC only has bungalows blocked for 8–14 March, so for other nights the hotel checks availability and bungalow type before sending your payment link.</p></section>';
+  h += '</tbody></table></div><p class="note">Bungalows left per night in the FKC block (8–14 March), single or shared. You can also book other nights between 1 and 31 March: FKC only has bungalows blocked for 8–14 March, so for other nights the hotel checks availability and bungalow type before sending your payment link. Prices above are for the event week; other nights follow the hotel\'s seasonal rates (high season from 14 March).</p></section>';
 
   h += '<section><div class="policy"><div class="eyebrow" style="color:var(--foam)">Please read before booking</div><h2>Cancellation policy</h2>';
   d.policy.forEach(function(p,i){ h += '<div class="prow' + (i===0?' free':'') + '"><span>' + esc(p[0]) + '</span><span>' + esc(p[1]) + '</span></div>'; });
@@ -264,9 +264,9 @@ function update(){
   var ns = nightsSel();
   var out = ns.filter(function(n){ return n.date < D.blockStart || n.date >= D.blockEnd; });
   $('oob').style.display = out.length ? 'block' : 'none';
-  $('oob').innerHTML = out.length ? '⚠️ <b>FKC has only blocked bungalows for 8–14 March.</b> For the other nights you chose (' + out.map(function(n){ return esc(n.label); }).join(', ') + '), the hotel will check availability and bungalow type before sending your payment link. You can still send your request.' : '';
+  $('oob').innerHTML = out.length ? '⚠️ <b>FKC has only blocked bungalows for 8–14 March.</b> For the other nights you chose (' + out.map(function(n){ return esc(n.label); }).join(', ') + '), the hotel will check availability and bungalow type before sending your payment link. Those nights are charged at the hotel\'s seasonal rate (high season from 14 March), already included in your total. You can still send your request.' : '';
   if (!t || !ns.length) { $('tot').textContent = '—'; $('totSub').textContent = ns.length ? 'Choose a bungalow' : 'Check-out must be after check-in'; return; }
-  var total = Math.round(t.pp[oc].night * ns.length * 100) / 100;
+  var total = Math.round(ns.reduce(function(a, n){ return a + (t.nightPP ? t.nightPP[oc][n.date] : t.pp[oc].night); }, 0) * 100) / 100;
   $('tot').textContent = fmt(total) + ' MAD';
   $('totLbl').textContent = oc === 2 ? 'Each person pays' : 'You pay';
   var full = ns.filter(function(n){ return t.free[n.date] <= 0; });
