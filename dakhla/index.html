@@ -39,6 +39,7 @@
   .step b{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--deep);color:var(--beach);font:700 14px Archivo,sans-serif;margin-bottom:10px}
   .step p{margin:0;font-size:15px}
   .note{font-size:14px;color:var(--muted);margin-top:12px}
+  .oob{display:none;background:#FFF4D6;border:2px solid #E0A800;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.5;margin:-4px 0 16px;color:#5c4400}
   /* rooms */
   .rooms{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
   .room{border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;background:#fff}
@@ -110,7 +111,7 @@
     <div class="pills" id="pills">
       <span class="pill">🪁 Event: 9–12 March 2027</span>
       <span class="pill">🏝 Lagon Energy, Dakhla</span>
-      <span class="pill">🛏 Block: 8 → 14 March</span>
+      <span class="pill">🛏 Rooms: 1 → 31 March</span>
     </div>
   </div>
 </header>
@@ -147,7 +148,7 @@ function render(d){
   D = d;
   document.getElementById('pills').insertAdjacentHTML('beforeend',
     '<span class="pill hot">Book by ' + esc(d.deadlineLabel) + '</span>');
-  var nN = d.nights.length;
+  var nN = d.blockNights || d.nights.filter(function(n){ return n.date >= d.blockStart && n.date < d.blockEnd; }).length;
   var h = '';
 
   h += '<section><div class="eyebrow">How it works</div><h2>Three steps, no middleman for your money</h2>' +
@@ -163,20 +164,21 @@ function render(d){
     h += '<div class="room"><h3>' + esc(t.name) + '</h3><p>' + esc(t.desc) + '</p><div class="prices">' +
          [[1,'On your own'],[2,'Shared with a friend']].map(function(o){ var p = t.pp[o[0]];
            return '<div class="pr"><div class="lbl">' + o[1] + '</div><div class="price">' + fmt(p.night) + ' MAD <small>/ person / night</small></div>' +
-             '<div class="stay">≈ ' + p.nightEur + ' € · full block (' + nN + ' nights): ' + fmt(p.full) + ' MAD ≈ ' + p.fullEur + ' €</div></div>'; }).join('') +
+             '<div class="stay">≈ ' + p.nightEur + ' € · event week 8–14 Mar (' + nN + ' nights): ' + fmt(p.full) + ' MAD ≈ ' + p.fullEur + ' €</div></div>'; }).join('') +
          '</div>' + leftBadge(t) + '</div>';
   });
   h += '</div><p class="note">Euro amounts are approximate. You pay in Moroccan dirhams (MAD).</p></section>';
 
   h += '<section><div class="eyebrow">Availability</div><h2>Bungalows left per night</h2><div class="tablewrap"><table class="av"><thead><tr><th>Bungalow</th>';
-  d.nights.forEach(function(n){ h += '<th>' + esc(n.label) + '</th>'; });
+  var bN = d.nights.filter(function(n){ return n.date >= d.blockStart && n.date < d.blockEnd; });
+  bN.forEach(function(n){ h += '<th>' + esc(n.label) + '</th>'; });
   h += '</tr></thead><tbody>';
   d.types.forEach(function(t){
     h += '<tr><td><b>' + esc(t.name) + '</b></td>';
-    d.nights.forEach(function(n){ var f = t.free[n.date]; h += '<td class="' + (f<=0?'c0':(f<=2?'c1':'')) + '">' + (f<=0?'Full':f) + '</td>'; });
+    bN.forEach(function(n){ var f = t.free[n.date]; h += '<td class="' + (f<=0?'c0':(f<=2?'c1':'')) + '">' + (f<=0?'Full':f) + '</td>'; });
     h += '</tr>';
   });
-  h += '</tbody></table></div><p class="note">Bungalows left per night (single or shared). Need nights outside 8–14 March? Tell us in the notes and we\'ll check with the hotel (outside the block, prices may differ).</p></section>';
+  h += '</tbody></table></div><p class="note">Bungalows left per night in the FKC block (8–14 March), single or shared. You can also book other nights between 1 and 31 March: FKC only has bungalows blocked for 8–14 March, so for other nights the hotel checks availability and bungalow type before sending your payment link.</p></section>';
 
   h += '<section><div class="policy"><div class="eyebrow" style="color:var(--foam)">Please read before booking</div><h2>Cancellation policy</h2>';
   d.policy.forEach(function(p,i){ h += '<div class="prow' + (i===0?' free':'') + '"><span>' + esc(p[0]) + '</span><span>' + esc(p[1]) + '</span></div>'; });
@@ -197,7 +199,7 @@ function render(d){
 function formHtml(d){
   var arrOpts = '', depOpts = '';
   d.nights.forEach(function(n){ arrOpts += '<option value="' + n.date + '">' + esc(n.label) + '</option>'; });
-  d.nights.slice(1).concat([{date:d.blockEnd,label:dayLabel(d.blockEnd)}]).forEach(function(n){ depOpts += '<option value="' + n.date + '">' + esc(n.label) + '</option>'; });
+  d.nights.slice(1).concat([{date:(d.openEnd||d.blockEnd),label:dayLabel(d.openEnd||d.blockEnd)}]).forEach(function(n){ depOpts += '<option value="' + n.date + '">' + esc(n.label) + '</option>'; });
   var types = d.types.map(function(t){
     var dis = t.minFree <= 0 && allFull(t);
     return '<label class="tcard' + (dis?' dis':'') + '"><input type="radio" name="typeId" value="' + t.id + '"' + (dis?' disabled':'') + '>' +
@@ -213,6 +215,7 @@ function formHtml(d){
       '<div class="field"><label for="arrival">Check-in</label><select id="arrival">' + arrOpts + '</select></div>' +
       '<div class="field"><label for="departure">Check-out</label><select id="departure">' + depOpts + '</select></div>' +
     '</div>' +
+    '<div class="oob" id="oob"></div>' +
     '<div class="grid2">' +
       '<div class="field"><label for="name">Full name</label><input type="text" id="name" autocomplete="name"></div>' +
       '<div class="field"><label for="email">Email</label><input type="email" id="email" autocomplete="email"></div>' +
@@ -228,7 +231,7 @@ function formHtml(d){
       '</div>' +
       '<p class="note" style="margin-bottom:0">Your friend gets their own payment link for their half.</p>' +
     '</div>' +
-    '<div class="field"><label for="notes">Notes (optional)</label><textarea id="notes" placeholder="Extra nights outside 8–14 March, looking for someone to share with, anything we should know…"></textarea></div>' +
+    '<div class="field"><label for="notes">Notes (optional)</label><textarea id="notes" placeholder="Looking for someone to share with, arriving late, anything we should know…"></textarea></div>' +
     '<div class="total"><div><small id="totLbl">You pay</small><br><b id="tot">—</b></div><small id="totSub" style="text-align:right"></small></div>' +
     '<label class="check field"><input type="checkbox" id="acceptPolicy"> I have read and accept the cancellation policy above.</label>' +
     '<button type="submit" id="btn">Send my room request</button>' +
@@ -243,6 +246,7 @@ function selType(){ var r = document.querySelector('input[name=typeId]:checked')
 function selOcc(){ var r = document.querySelector('input[name=occupancy]:checked'); return r && r.value === '2' ? 2 : 1; }
 
 function wireForm(){
+  $('arrival').value = D.blockStart;
   $('departure').value = D.blockEnd;
   document.querySelectorAll('input[name=typeId],input[name=occupancy]').forEach(function(r){ r.addEventListener('change', update); });
   ['arrival','departure'].forEach(function(id){ $(id).addEventListener('change', update); });
@@ -260,6 +264,9 @@ function update(){
   var t = selType(), oc = selOcc();
   $('rm').style.display = oc === 2 ? 'block' : 'none';
   var ns = nightsSel();
+  var out = ns.filter(function(n){ return n.date < D.blockStart || n.date >= D.blockEnd; });
+  $('oob').style.display = out.length ? 'block' : 'none';
+  $('oob').innerHTML = out.length ? '⚠️ <b>FKC has only blocked bungalows for 8–14 March.</b> For the other nights you chose (' + out.map(function(n){ return esc(n.label); }).join(', ') + '), the hotel will check availability and bungalow type before sending your payment link. You can still send your request.' : '';
   if (!t || !ns.length) { $('tot').textContent = '—'; $('totSub').textContent = ns.length ? 'Choose a bungalow' : 'Check-out must be after check-in'; return; }
   var total = Math.round(t.pp[oc].night * ns.length * 100) / 100;
   $('tot').textContent = fmt(total) + ' MAD';

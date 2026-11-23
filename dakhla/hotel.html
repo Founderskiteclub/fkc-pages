@@ -120,7 +120,7 @@ function renderList(){
   $('list').innerHTML = order.map(function(ref){
     var g = groups[ref], r0 = g[0];
     return '<div class="room"><div class="rh"><div><b>' + esc(ref) + ' · ' + esc(r0.roomType) + '</b></div>' +
-      '<span>' + esc(r0.arrivalLabel) + ' → ' + esc(r0.departureLabel) + ' · ' + r0.nights + ' noches' + (r0.matchMe ? ' · 👥 busca compañero' : '') + '</span></div>' +
+      '<span>' + esc(r0.arrivalLabel) + ' → ' + esc(r0.departureLabel) + ' · ' + r0.nights + ' noches' + (r0.outOfBlock ? ' · <b style="color:#b3261e">⚠ fuera del bloque 8–14 mar: confirmar disponibilidad con el hotel antes de enviar el link</b>' : '') + (r0.matchMe ? ' · 👥 busca compañero' : '') + '</span></div>' +
       g.map(rowHtml).join('') + '</div>';
   }).join('');
 }
