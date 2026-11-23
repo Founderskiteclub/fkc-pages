@@ -223,11 +223,12 @@ function formHtml(d){
       '<div class="field"><label for="ticket">FKC Dakhla ticket</label><select id="ticket"><option value="">Choose…</option><option>Yes, I have my ticket</option><option>Not yet</option></select></div>' +
     '</div>' +
     '<div class="rm" id="rm" style="display:none">' +
+      '<label class="check" style="margin:0 0 14px"><input type="checkbox" id="payAll"> <span><b>I\'ll pay for the whole bungalow</b> (e.g. you\'re coming with your child or partner). You get a single payment link for both.</span></label>' +
       '<div class="grid2" id="rmFields">' +
-        '<div class="field" style="margin:0"><label for="roommateName">Friend\'s name</label><input type="text" id="roommateName"></div>' +
-        '<div class="field" style="margin:0"><label for="roommateEmail">Friend\'s email</label><input type="email" id="roommateEmail"></div>' +
+        '<div class="field" style="margin:0"><label for="roommateName" id="rmNameLbl">Friend\'s name</label><input type="text" id="roommateName"></div>' +
+        '<div class="field" style="margin:0"><label for="roommateEmail" id="rmEmailLbl">Friend\'s email</label><input type="email" id="roommateEmail"></div>' +
       '</div>' +
-      '<p class="note" style="margin-bottom:0">Your friend gets their own payment link for their half.</p>' +
+      '<p class="note" style="margin-bottom:0" id="rmNote">Your friend gets their own payment link for their half.</p>' +
     '</div>' +
     '<div class="field"><label for="notes">Notes (optional)</label><textarea id="notes" placeholder="Looking for someone to share with, arriving late, anything we should know…"></textarea></div>' +
     '<div class="total"><div><small id="totLbl">You pay</small><br><b id="tot">—</b></div><small id="totSub" style="text-align:right"></small></div>' +
@@ -247,6 +248,7 @@ function wireForm(){
   $('arrival').value = D.blockStart;
   $('departure').value = D.blockEnd;
   document.querySelectorAll('input[name=typeId],input[name=occupancy]').forEach(function(r){ r.addEventListener('change', update); });
+  $('payAll').addEventListener('change', update);
   ['arrival','departure'].forEach(function(id){ $(id).addEventListener('change', update); });
   $('f').addEventListener('submit', submit);
   update();
@@ -261,16 +263,21 @@ function update(){
   document.querySelectorAll('.tcard').forEach(function(c){ c.classList.toggle('on', c.querySelector('input').checked); });
   var t = selType(), oc = selOcc();
   $('rm').style.display = oc === 2 ? 'block' : 'none';
+  var pa = oc === 2 && $('payAll').checked;
+  $('rmNameLbl').textContent = pa ? 'Name of the person staying with you' : 'Friend\'s name';
+  $('rmEmailLbl').textContent = pa ? 'Their email (optional)' : 'Friend\'s email';
+  $('rmNote').textContent = pa ? 'You pay the whole bungalow with one payment link.' : 'Your friend gets their own payment link for their half.';
   var ns = nightsSel();
   var out = ns.filter(function(n){ return n.date < D.blockStart || n.date >= D.blockEnd; });
   $('oob').style.display = out.length ? 'block' : 'none';
   $('oob').innerHTML = out.length ? '⚠️ <b>FKC has only blocked bungalows for 8–14 March.</b> For the other nights you chose (' + out.map(function(n){ return esc(n.label); }).join(', ') + '), the hotel will check availability and bungalow type before sending your payment link. Those nights are charged at the hotel\'s seasonal rate (high season from 14 March), already included in your total. You can still send your request.' : '';
   if (!t || !ns.length) { $('tot').textContent = '—'; $('totSub').textContent = ns.length ? 'Choose a bungalow' : 'Check-out must be after check-in'; return; }
   var total = Math.round(ns.reduce(function(a, n){ return a + (t.nightPP ? t.nightPP[oc][n.date] : t.pp[oc].night); }, 0) * 100) / 100;
+  if (pa) total = Math.round(total * 200) / 100;
   $('tot').textContent = fmt(total) + ' MAD';
-  $('totLbl').textContent = oc === 2 ? 'Each person pays' : 'You pay';
+  $('totLbl').textContent = pa ? 'You pay (whole bungalow)' : (oc === 2 ? 'Each person pays' : 'You pay');
   var full = ns.filter(function(n){ return t.free[n.date] <= 0; });
-  $('totSub').innerHTML = ns.length + ' night' + (ns.length>1?'s':'') + ' · ≈ ' + Math.round(total * D.madToEur) + ' €' + (oc === 2 ? ' each<br>Bungalow total: ' + fmt(Math.round(total * 200) / 100) + ' MAD' : '') +
+  $('totSub').innerHTML = ns.length + ' night' + (ns.length>1?'s':'') + ' · ≈ ' + Math.round(total * D.madToEur) + ' €' + (oc === 2 && !pa ? ' each<br>Bungalow total: ' + fmt(Math.round(total * 200) / 100) + ' MAD' : (pa ? ' · 2 guests' : '')) +
     (full.length ? '<br><span style="color:#ffb4ab">Full on ' + full.map(function(n){return n.label;}).join(', ') + '</span>' : '');
 }
 
@@ -284,13 +291,16 @@ function submit(ev){
   var oc = selOcc();
   if (!nightsSel().length) return showErr('Check-out must be after check-in.');
   if (!$('name').value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('email').value.trim())) return showErr('Please enter your full name and a valid email.');
-  if (oc === 2 && (!$('roommateName').value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('roommateEmail').value.trim())))
+  var pa = oc === 2 && $('payAll').checked, re = $('roommateEmail').value.trim();
+  if (oc === 2 && pa && !$('roommateName').value.trim()) return showErr('Add the name of the person staying with you.');
+  if (oc === 2 && pa && re && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(re)) return showErr('Their email is not valid (you can leave it empty).');
+  if (oc === 2 && !pa && (!$('roommateName').value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(re)))
     return showErr('Add your friend\'s name and email.');
   if (!$('acceptPolicy').checked) return showErr('Please accept the cancellation policy.');
   var data = {
     typeId: t.id, occupancy: oc, arrival: $('arrival').value, departure: $('departure').value,
     name: $('name').value, email: $('email').value, phone: $('phone').value, ticket: $('ticket').value,
-    roommateName: $('roommateName').value, roommateEmail: $('roommateEmail').value,
+    roommateName: $('roommateName').value, roommateEmail: $('roommateEmail').value, payAll: pa,
     notes: $('notes').value, acceptPolicy: $('acceptPolicy').checked
   };
   $('btn').disabled = true; $('btn').textContent = 'Sending…';
@@ -299,7 +309,7 @@ function submit(ev){
     if (!res.ok) return showErr(res.error);
     $('f').style.display = 'none';
     var ok = $('ok');
-    ok.innerHTML = '<h3>🎉 Request sent!</h3><p>Your reference is <strong>' + esc(res.roomRef) + '</strong>. ' + (selOcc() === 2 ? 'Each person pays' : 'You pay') + ': <strong>' + fmt(res.totalMad) + ' MAD</strong> (≈ ' + res.totalEur + ' €).</p>' +
+    ok.innerHTML = '<h3>🎉 Request sent!</h3><p>Your reference is <strong>' + esc(res.roomRef) + '</strong>. ' + (selOcc() === 2 && !pa ? 'Each person pays' : 'You pay') + ': <strong>' + fmt(res.totalMad) + ' MAD</strong> (≈ ' + res.totalEur + ' €).</p>' +
       '<p>We\'ve emailed you a summary. The hotel\'s payment link will follow by email soon. <strong>It\'s valid for ' + D.linkHours + ' hours only</strong>, so pay as soon as it arrives to secure the room.</p>' +
       '<p>📸 <strong>When you pay, take a screenshot of the payment confirmation</strong> and send it to Enrico on WhatsApp (+34 697 909 135). Then tap “I\'ve paid” in the payment email.</p>' +
       '<p class="note">Didn\'t get the email? Check your spam folder or write to ' + esc(D.contact) + '.</p>';
